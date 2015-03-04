@@ -25,7 +25,8 @@ elixir.extend('browserify', function (src, options) {
     return gulp.src(src)
       .pipe(browserify(options.browserify))
       .pipe(config.production ? uglify() : util.noop())
-      .pipe(gulp.dest(options.output));
+      .pipe(gulp.dest(options.output))
+      .pipe(new Notification().message('Browserify completed!'));
   });
 
   this.registerWatcher('browserify', options.srcDir + '/**/*.js');
