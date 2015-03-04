@@ -1,0 +1,25 @@
+{
+  "name": "laravel-elixir-browserify",
+  "version": "0.1.0",
+  "description": "Laravel Elixir Browserify",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JeffreyVdb/laravel-elixir-browserify"
+  },
+  "keywords": [
+    "browserify",
+    "laravel",
+    "elixir",
+    "gulp"
+  ],
+  "author": {
+    "name": "Jeffrey Vandenborne <vandenbornejeffrey@gmail.com>"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/JeffreyVdb/laravel-elixir-browserify",
+  "dependencies": {
+    "lodash": "^3.3.1",
+    "gulp-browserify": "^0.5.1"
+  }
+}
