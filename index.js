@@ -2,6 +2,8 @@ var _            = require('lodash'),
     elixir       = require('laravel-elixir'),
     gulp         = require('gulp'),
     browserify   = require('gulp-browserify'),
+    util         = require('gulp-util'),
+    uglify       = require('gulp-uglify'),
     Notification = require('laravel-elixir/ingredients/commands/Notification'),
     utilities    = require('laravel-elixir/ingredients/commands/Utilities');
 
@@ -21,7 +23,8 @@ elixir.extend('browserify', function (src, options) {
 
   gulp.task('browserify', function () {
     return gulp.src(src)
-      .pipe(browserify())
+      .pipe(browserify(options.browserify))
+      .pipe(config.production ? uglify() : util.noop())
       .pipe(gulp.dest(options.output));
   });
 

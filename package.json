@@ -1,6 +1,6 @@
 {
   "name": "laravel-elixir-browserify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Laravel Elixir Browserify",
   "main": "index.js",
   "repository": {
@@ -19,7 +19,9 @@
   "license": "MIT",
   "homepage": "https://github.com/JeffreyVdb/laravel-elixir-browserify",
   "dependencies": {
-    "lodash": "^3.3.1",
-    "gulp-browserify": "^0.5.1"
+    "gulp-browserify": "^0.5.1",
+    "gulp-uglify": "^1.1.0",
+    "gulp-util": "^3.0.4",
+    "lodash": "^3.3.1"
   }
 }
