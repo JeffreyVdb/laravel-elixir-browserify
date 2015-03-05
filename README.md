@@ -21,7 +21,7 @@ configuration to the following
 
 ```javascript
 elixir(function(mix) {
-  mix.browserify("**/*.js", {
+  mix.browserify("**/*.js", null, {
     srcDir: './assets/js'
   });
 });
@@ -31,7 +31,7 @@ You can also change browserify specific options if you like:
 
 ```javascript
 elixir(function(mix) {
-  mix.browserify("**/*.js", {
+  mix.browserify("**/*.js", null, {
     browserify: {
       // Define your browserify configuration within this object
     }
@@ -45,13 +45,12 @@ var elixir = require('laravel-elixir');
 require('laravel-elixir-browserify');
 
 elixir(function(mix) {
-  mix.browserify("**/*.js", {
+  mix.browserify("**/*.js", "public/js", {
     browserify: {
       debug: true,
       insertGlobals: true,
-      transform: ["debowerify"],
-    },
-    output: "public/js"
+      transform: ["debowerify"]
+    }
   })
 });
 ```
