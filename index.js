@@ -1,13 +1,16 @@
+const PLUGIN_NAME = 'browserify';
+
 var _            = require('lodash'),
     elixir       = require('laravel-elixir'),
     gulp         = require('gulp'),
-    browserify   = require('gulp-browserify'),
+    browserify   = require('browserify'),
     util         = require('gulp-util'),
     uglify       = require('gulp-uglify'),
+    transform    = require('vinyl-transform'),
     Notification = require('laravel-elixir/ingredients/commands/Notification'),
     utilities    = require('laravel-elixir/ingredients/commands/Utilities');
 
-elixir.extend('browserify', function (src, options) {
+elixir.extend(PLUGIN_NAME, function (src, output, options) {
   var config = this,
       defaultOptions = {
         browserify: {
@@ -15,20 +18,27 @@ elixir.extend('browserify', function (src, options) {
           insertGlobals: false
         },
         srcDir: config.assetsDir + 'js',
-        output: config.jsOutput
+        base: '.'
       };
 
   options = _.extend(defaultOptions, options);
   src = "./" + utilities.buildGulpSrc(src, options.srcDir);
+  output = output || config.jsOutput;
 
-  gulp.task('browserify', function () {
-    return gulp.src(src)
-      .pipe(browserify(options.browserify))
+  // Create vinyl stream to use with pipes
+  var browserified = transform(function (filename) {
+    return browserify(filename, options.browserify).bundle();
+  });
+
+  // Create task
+  gulp.task(PLUGIN_NAME, function () {
+    return gulp.src(src, {base: options.base})
+      .pipe(browserified)
       .pipe(config.production ? uglify() : util.noop())
-      .pipe(gulp.dest(options.output))
+      .pipe(gulp.dest(output))
       .pipe(new Notification().message('Browserify completed!'));
   });
 
-  this.registerWatcher('browserify', options.srcDir + '/**/*.js');
-  return this.queueTask('browserify');
+  this.registerWatcher(PLUGIN_NAME, options.srcDir + '/**/*.js');
+  return this.queueTask(PLUGIN_NAME);
 });
