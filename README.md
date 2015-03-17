@@ -32,12 +32,15 @@ You can also change browserify specific options if you like:
 ```javascript
 elixir(function(mix) {
   mix.browserify("**/*.js", null, {
-    browserify: {
+    plugin: {
       // Define your browserify configuration within this object
     }
   });
 });
 ```
+
+The configuration object defined as plugin will be passed directory to the
+browserify module ([browserify module](https://www.npmjs.com/package/browserify/)).
 
 #### Advanced example
 ```javascript
@@ -46,7 +49,7 @@ require('laravel-elixir-browserify');
 
 elixir(function(mix) {
   mix.browserify("**/*.js", "public/js", {
-    browserify: {
+    plugin: {
       debug: true,
       insertGlobals: true,
       transform: ["debowerify"]

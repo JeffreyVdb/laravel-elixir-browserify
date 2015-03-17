@@ -13,7 +13,7 @@ var _            = require('lodash'),
 elixir.extend(PLUGIN_NAME, function (src, output, options) {
   var config = this,
       defaultOptions = {
-        browserify: {
+        plugin: {
           debug: !config.production,
           insertGlobals: false
         },
@@ -27,7 +27,7 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
 
   // Create vinyl stream to use with pipes
   var browserified = transform(function (filename) {
-    return browserify(filename, options.browserify).bundle();
+    return browserify(filename, options.plugin).bundle();
   });
 
   // Create task
