@@ -11,7 +11,7 @@ var _            = require('lodash'),
     utilities    = require('laravel-elixir/ingredients/commands/Utilities');
 
 elixir.extend(PLUGIN_NAME, function (src, output, options) {
-  var config = this,
+  var config = this, b, browserified,
       defaultOptions = {
         plugin: {
           debug: !config.production,
@@ -21,18 +21,26 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
         base: '.'
       };
 
-  options = _.extend(defaultOptions, options);
+  var defaults = _.partialRight(_.assign, function(value, other) {
+    if (typeof other == 'object') {
+      return _.assign(value, other);
+    }
+
+    return other;
+  });
+
+  options = defaults(defaultOptions, options);
   src = "./" + utilities.buildGulpSrc(src, options.srcDir);
   output = output || config.jsOutput;
 
-  // Create vinyl stream to use with pipes
-  var browserified = transform(function (filename) {
+  // Create vinyl stream to use with pipen s
+  browserified = transform(function (filename) {
     return browserify(filename, options.plugin).bundle();
   });
 
   // Create task
   gulp.task(PLUGIN_NAME, function () {
-    return gulp.src(src, {base: options.base})
+    return gulp.src(src, { base: options.base })
       .pipe(browserified)
       .pipe(config.production ? uglify() : util.noop())
       .pipe(gulp.dest(output))
