@@ -11,7 +11,7 @@ var _            = require('lodash'),
     utilities    = require('laravel-elixir/ingredients/commands/Utilities');
 
 elixir.extend(PLUGIN_NAME, function (src, output, options) {
-  var config = this, b, browserified,
+  var config = this,
       defaultOptions = {
         plugin: {
           debug: !config.production,
@@ -19,9 +19,10 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
         },
         srcDir: config.assetsDir + 'js',
         base: '.'
-      };
+      },
+      onError, browserified, defaults;
 
-  var defaults = _.partialRight(_.assign, function (value, other) {
+  defaults = _.partialRight(_.assign, function (value, other) {
     if (typeof other == 'object') {
       return _.assign(value, other);
     }
@@ -34,12 +35,19 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
   output = output || config.jsOutput;
 
   browserified = function () {
+    var pipe = this;
     return through2.obj(function (file, enc, next) {
       browserify(file.path, options.plugin).bundle(function (err, res) {
+        if (err) {
+          util.log(util.colors.red('Error ' + err.message));
+          next(null, file);
+          return;
+        }
+
         file.contents = res;
         next(null, file);
       });
-    })
+    });
   };
 
   // Create task
