@@ -1,6 +1,6 @@
 {
   "name": "laravel-elixir-browserify",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Laravel Elixir Browserify",
   "main": "index.js",
   "repository": {

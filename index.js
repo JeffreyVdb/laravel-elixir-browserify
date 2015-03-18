@@ -19,8 +19,7 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
         },
         srcDir: config.assetsDir + 'js',
         base: '.'
-      },
-      onError, browserified, defaults;
+      }, browserified, defaults;
 
   defaults = _.partialRight(_.assign, function (value, other) {
     if (typeof other == 'object') {
@@ -35,16 +34,17 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
   output = output || config.jsOutput;
 
   browserified = function () {
-    var pipe = this;
     return through2.obj(function (file, enc, next) {
+      var pipe = this;
       browserify(file.path, options.plugin).bundle(function (err, res) {
         if (err) {
           util.log(util.colors.red('Error ' + err.message));
-          next(null, file);
-          return;
+          pipe.emit('end');
+        }
+        else {
+          file.contents = res;
         }
 
-        file.contents = res;
         next(null, file);
       });
     });
