@@ -1,12 +1,12 @@
 const PLUGIN_NAME = 'browserify';
 
 var _            = require('lodash'),
+    through2     = require('through2'),
     elixir       = require('laravel-elixir'),
     gulp         = require('gulp'),
     browserify   = require('browserify'),
     util         = require('gulp-util'),
     uglify       = require('gulp-uglify'),
-    transform    = require('vinyl-transform'),
     Notification = require('laravel-elixir/ingredients/commands/Notification'),
     utilities    = require('laravel-elixir/ingredients/commands/Utilities');
 
@@ -21,7 +21,7 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
         base: '.'
       };
 
-  var defaults = _.partialRight(_.assign, function(value, other) {
+  var defaults = _.partialRight(_.assign, function (value, other) {
     if (typeof other == 'object') {
       return _.assign(value, other);
     }
@@ -33,18 +33,22 @@ elixir.extend(PLUGIN_NAME, function (src, output, options) {
   src = "./" + utilities.buildGulpSrc(src, options.srcDir);
   output = output || config.jsOutput;
 
-  // Create vinyl stream to use with pipen s
-  browserified = transform(function (filename) {
-    return browserify(filename, options.plugin).bundle();
-  });
+  browserified = function () {
+    return through2.obj(function (file, enc, next) {
+      browserify(file.path, options.plugin).bundle(function (err, res) {
+        file.contents = res;
+        next(null, file);
+      });
+    })
+  };
 
   // Create task
   gulp.task(PLUGIN_NAME, function () {
     return gulp.src(src, { base: options.base })
-      .pipe(browserified)
+      .pipe(browserified())
       .pipe(config.production ? uglify() : util.noop())
       .pipe(gulp.dest(output))
-      .pipe(new Notification().message('Browserify completed!'));
+      .pipe(new Notification().message('Browserify completed!'))
   });
 
   this.registerWatcher(PLUGIN_NAME, options.srcDir + '/**/*.js');
